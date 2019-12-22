@@ -13,6 +13,12 @@ client = MongoClient("mongodb://db:27017")
 db = client.ImageRecognition
 users = db["Users"]
 
+def UserExist(username):
+    if users.find({"Username":username}).count()==0:
+        return False
+    else:
+        return True
+
 class Register(Resource):
     def post(self):
         postedData = request.get_json()
@@ -20,9 +26,25 @@ class Register(Resource):
         username = postedData["username"]
         password = postedData["password"]
 
-        if USerExists(username):
+        if UserExist(username):
             retJson = {
                 "status" : 301,
                 "msg" : "Invalid Username"
             }
             return jsonify(retJson)
+
+        hashed_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+
+        users.insert({
+            "Username": username,
+            "Password": hashed_pw,
+            "tokens": 3
+        })
+
+
+        retJson = {
+            "status" : 200,
+            "msg" : "You successfully signed up for this API"
+        }
+
+        return jsonify(retJson)
