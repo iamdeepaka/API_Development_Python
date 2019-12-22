@@ -52,6 +52,18 @@ class Register(Resource):
         return jsonify(retJson)
 
 
+
+
+def verifyCredentials(username, passwd):
+    if not UserExist(username):
+        return generateReturnDictionary(301, "Invalid Username"), True
+
+    correct_pw = verify_pw(username, passwd)
+    if not correct_pw:
+        return generateReturnDictionary(302, "Invalid Password"), True
+
+    return None, False
+
 class Classify(Resource):
     def post(self):
         postedData = request.get_json()
