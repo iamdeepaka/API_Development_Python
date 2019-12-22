@@ -40,6 +40,8 @@ import numpy as np
 from six.moves import urllib
 import tensorflow as tf
 
+import json
+
 FLAGS = None
 
 # pylint: disable=line-too-long
@@ -152,10 +154,17 @@ def run_inference_on_image(image):
     node_lookup = NodeLookup()
 
     top_k = predictions.argsort()[-FLAGS.num_top_predictions:][::-1]
+    # create dict to hold the results
+    retJson = {}
     for node_id in top_k:
       human_string = node_lookup.id_to_string(node_id)
       score = predictions[node_id]
+      # copy the results into the dict
+      retJson[human_string] = score
       print('%s (score = %.5f)' % (human_string, score))
+    # write the results to a file to be read into Classify class in app.py
+    with open("text.txt") as results_file:
+      json.dump(retJson, results_file)
 
 
 def maybe_download_and_extract():
