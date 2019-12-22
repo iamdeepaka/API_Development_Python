@@ -7,5 +7,5 @@ services:
       - "5000:5000"
     links:
       - db
-db:
-  build: ./db
+  db:
+    build: ./db
