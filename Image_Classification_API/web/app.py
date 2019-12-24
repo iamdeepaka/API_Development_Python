@@ -107,6 +107,7 @@ class Classify(Resource):
 
         with open("temp.jpg", "wb") as image_file:
             image_file.write(req.content)
+            # write to the standard output
             proc = subprocess.Popen('python classify_image.py --model_dir=. --image_file=./temp.jpg', stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
             ret = proc.communicate()[0]
             proc.wait()
